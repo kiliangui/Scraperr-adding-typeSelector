@@ -73,7 +73,7 @@ async def test_add_custom_items():
 async def test_proxies(client: AsyncClient, db_session: AsyncSession):
     job = Job(
         url="https://example.com",
-        elements=[Element(xpath="//div", name="test")],
+        elements=[Element(xpath="//div", name="test", typeSelector="text")],
         job_options=JobOptions(
             proxies=[
                 Proxy(

@@ -184,9 +184,16 @@ def parse_response(text: str) -> list[dict[str, str]]:
             if line.strip().startswith("-"):
                 name = re.findall(r"<name: (.*?)>", line)[0]
                 xpath = re.findall(r"<xpath: (.*?)>", line)[0]
-                results.append({"name": name, "xpath": xpath})
+                # Extract typeSelector if present, default to "text"
+                type_selector_match = re.findall(r"<typeSelector: (.*?)>", line)
+                type_selector = type_selector_match[0] if type_selector_match else "text"
+                results.append({
+                    "name": name, 
+                    "xpath": xpath, 
+                    "typeSelector": type_selector
+                })
             else:
-                results.append({"name": "", "xpath": line.strip()})
+                results.append({"name": "", "xpath": line.strip(), "typeSelector": "text"})
 
     return results
 
@@ -241,15 +248,23 @@ async def capture_elements(
                 if not element_handle:
                     continue
 
-                link = await element_handle.get_attribute("href") or ""
+                # Handle attribute extraction based on typeSelector
+                type_selector = xpath.get("typeSelector", "text")
+                
+                if type_selector and type_selector != "text":
+                    # Extract specific attribute
+                    element_text = await element_handle.get_attribute(type_selector) or ""
+                else:
+                    # Default to text content
+                    text = await element_handle.text_content()
+                    if text:
+                        element_text += text
 
-                text = await element_handle.text_content()
-
-                if text:
-                    element_text += text
-
-                if link:
-                    element_text += f" ({link})"
+                    # Keep the href logic for links when extracting text
+                    if not type_selector or type_selector == "text":
+                        link = await element_handle.get_attribute("href") or ""
+                        if link:
+                            element_text += f" ({link})"
 
                 cleaned = clean_text(element_text)
 

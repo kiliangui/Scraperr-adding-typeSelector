@@ -6,8 +6,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Box,
   Divider,
+  FormControl,
   IconButton,
+  MenuItem,
   Paper,
+  Select,
   Table,
   TableBody,
   TableCell,
@@ -32,12 +35,13 @@ export const ElementTable = ({ rows, setRows, submittedURL }: Props) => {
     name: "",
     xpath: "",
     url: "",
+    typeSelector: "text",
   });
 
   const handleAddRow = () => {
     const updatedRow = { ...newRow, url: submittedURL };
     setRows([updatedRow, ...rows]);
-    setNewRow({ name: "", xpath: "", url: "" });
+    setNewRow({ name: "", xpath: "", url: "", typeSelector: "text" });
   };
 
   const handleDeleteRow = (elementName: string) => {
@@ -107,9 +111,10 @@ export const ElementTable = ({ rows, setRows, submittedURL }: Props) => {
           >
             <TableHead>
               <TableRow>
-                <TableCell width="30%">Name</TableCell>
-                <TableCell width="50%">XPath</TableCell>
-                <TableCell width="20%" align="center">
+                <TableCell width="25%">Name</TableCell>
+                <TableCell width="40%">XPath</TableCell>
+                <TableCell width="20%">Type</TableCell>
+                <TableCell width="15%" align="center">
                   Actions
                 </TableCell>
               </TableRow>
@@ -164,10 +169,34 @@ export const ElementTable = ({ rows, setRows, submittedURL }: Props) => {
                     }}
                   />
                 </TableCell>
+                <TableCell>
+                  <FormControl size="small" fullWidth>
+                    <Select
+                      data-cy="type-selector-field"
+                      value={newRow.typeSelector || "text"}
+                      onChange={(e) =>
+                        setNewRow({ ...newRow, typeSelector: e.target.value })
+                      }
+                      sx={{
+                        "& .MuiSelect-select": {
+                          textTransform: "capitalize",
+                        },
+                      }}
+                    >
+                      <MenuItem value="text">Text Content</MenuItem>
+                      <MenuItem value="href">Href (Link)</MenuItem>
+                      <MenuItem value="src">Src (Image/Video)</MenuItem>
+                      <MenuItem value="alt">Alt (Image Alt)</MenuItem>
+                      <MenuItem value="title">Title</MenuItem>
+                      <MenuItem value="class">Class</MenuItem>
+                      <MenuItem value="id">ID</MenuItem>
+                    </Select>
+                  </FormControl>
+                </TableCell>
                 <TableCell align="center">
                   <Tooltip
                     title={
-                      newRow.xpath.length > 0 && newRow.name.length > 0
+                      newRow.xpath.length > 0 && newRow.name.length > 0 && newRow.typeSelector
                         ? "Add Element"
                         : "Fill out all fields to add an element"
                     }
@@ -180,7 +209,7 @@ export const ElementTable = ({ rows, setRows, submittedURL }: Props) => {
                         size="small"
                         onClick={handleAddRow}
                         disabled={
-                          !(newRow.xpath.length > 0 && newRow.name.length > 0)
+                          !(newRow.xpath.length > 0 && newRow.name.length > 0 && newRow.typeSelector)
                         }
                         sx={{
                           bgcolor: "primary.main",
@@ -227,6 +256,17 @@ export const ElementTable = ({ rows, setRows, submittedURL }: Props) => {
                       noWrap
                     >
                       {row.xpath}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        textTransform: "capitalize",
+                        color: "text.secondary",
+                      }}
+                    >
+                      {row.typeSelector || "text"}
                     </Typography>
                   </TableCell>
                   <TableCell align="center">

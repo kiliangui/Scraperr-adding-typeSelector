@@ -156,9 +156,11 @@ export const addSiteMapAction = (
   cy.get('[data-cy="add-site-map-action"]').click();
 };
 
-export const addElement = (name: string, xpath: string) => {
+export const addElement = (name: string, xpath: string, typeSelector: string = "text") => {
   cy.get('[data-cy="name-field"]').type(name);
   cy.get('[data-cy="xpath-field"]').type(xpath);
+  cy.get('[data-cy="type-selector-field"]').click();
+  cy.get(`[data-value="${typeSelector}"]`).click();
   cy.get('[data-cy="add-button"]').click();
 };
 

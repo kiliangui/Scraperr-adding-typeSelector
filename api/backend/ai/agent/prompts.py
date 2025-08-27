@@ -23,6 +23,7 @@ ELEMENT_EXTRACTION_PROMPT = """
 - One XPath is acceptable if that's all that's needed.
 - Try and limit it down to 1 - 3 xpaths.
 - Include a name for each xpath.
+- For each xpath, specify what to extract: text content or a specific attribute.
 
 <important>
 - USE THE MOST SIMPLE XPATHS POSSIBLE.
@@ -34,11 +35,13 @@ ELEMENT_EXTRACTION_PROMPT = """
 **Example Format:**
 ```xml
 <xpaths>
-- <name: insert_name_here>: <xpath: //div>
-- <name: insert_name_here>: <xpath: //span>
-- <name: insert_name_here>: <xpath: //span[contains(@text, 'example')]>
-- <name: insert_name_here>: <xpath: //div[contains(@text, 'example')]>
-- <name: insert_name_here>: <xpath: //a[@href]>
+- <name: insert_name_here>: <xpath: //div>: <typeSelector: text>
+- <name: insert_name_here>: <xpath: //span>: <typeSelector: text>
+- <name: insert_name_here>: <xpath: //span[contains(@text, 'example')]>: <typeSelector: text>
+- <name: insert_name_here>: <xpath: //div[contains(@text, 'example')]>: <typeSelector: text>
+- <name: insert_name_here>: <xpath: //a[@href]>: <typeSelector: href>
+- <name: insert_name_here>: <xpath: //img[@src]>: <typeSelector: src>
+- <name: insert_name_here>: <xpath: //img[@alt]>: <typeSelector: alt>
 - etc
 </xpaths>
 
@@ -54,5 +57,4 @@ ELEMENT_EXTRACTION_PROMPT = """
 
 **Target content:**
 {prompt}
-
 """

@@ -132,11 +132,20 @@ async def collect_scraped_elements(
                 ]
                 continue
 
-            text = (
-                " ".join(str(t) for t in e.itertext())
-                if isinstance(e, etree._Element)
-                else str(e)  # type: ignore
-            )
+            # Handle attribute extraction based on typeSelector
+            if elem.typeSelector and elem.typeSelector != "text":
+                # Extract specific attribute
+                if isinstance(e, etree._Element):
+                    text = e.get(elem.typeSelector, "")
+                else:
+                    text = str(e)
+            else:
+                # Default to text content
+                text = (
+                    " ".join(str(t) for t in e.itertext())
+                    if isinstance(e, etree._Element)
+                    else str(e)  # type: ignore
+                )
 
             text = clean_text(text)
 

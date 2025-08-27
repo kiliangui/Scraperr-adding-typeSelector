@@ -17,7 +17,7 @@ def create_job(
     return Job(
         id=uuid.uuid4().hex,
         url="https://example.com",
-        elements=[Element(name="test", xpath="xpath")],
+        elements=[Element(name="test", xpath="xpath", typeSelector="text")],
         job_options=job_options,
     )
 
@@ -31,6 +31,7 @@ def create_completed_job() -> Job:
                 name="element_name",
                 xpath="//div",
                 url="https://example.com",
+                typeSelector="text",
             )
         ],
         job_options=JobOptions(multi_page_scrape=False, custom_headers={}),
